@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
-
+import random
+import requests
 
 
 
@@ -12,7 +13,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["GET", "OPTIONS"],
+    allow_methods=["GET", "POST","OPTIONS"],
     allow_headers=["*"],
 )
 
@@ -30,6 +31,29 @@ async def chat():
 @app.get('/')
 async def root():
     return {"message": "Welcome to Backend Test Server"}
+
+@app.get('/generate_random_number')
+async def generate_random_number():
+    return {"random_number from second backend": random.randint(0, 100)}
+
+@app.post("/chat_with_another_backend")
+def proxy_request(url: str):
+    """
+    Makes a GET request to the provided URL and returns the response.
+    """
+    try:
+        print(url)
+        response = requests.get(url)
+        print(response.status_code)
+        data = response.json()
+        print(data)
+        return {
+           "result": data
+        }
+    except Exception as e:
+        return {"error": str(e)}
+
+
 
 if __name__ == "__main__":
     import uvicorn
