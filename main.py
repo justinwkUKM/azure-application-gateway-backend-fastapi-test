@@ -27,6 +27,10 @@ async def chat(message: Message):
 async def chat():
     return {"response": "You're awesome"}
 
+@app.get('/')
+async def root():
+    return {"message": "Welcome to Backend Test Server"}
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
